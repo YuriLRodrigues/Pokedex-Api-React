@@ -4,8 +4,10 @@ import { FaHeart } from 'react-icons/fa';
 import { useContext } from 'react';
 import { FavoriteContext } from '../context/FavoriteContext';
 
-const Navbar = () => {
+const Navbar = ({onSearch}) => {
   const { favorites } = useContext(FavoriteContext)
+  
+  
   return (
     <header>
       <nav>
@@ -15,7 +17,7 @@ const Navbar = () => {
           alt="Logo PokeAPI"
         />
         <p><FaHeart className='heart'/> {favorites.length}</p>
-        <SearchBar />
+        <SearchBar onSearch={onSearch}/>
       </nav>
     </header>
   );

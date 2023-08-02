@@ -6,7 +6,6 @@ const App = () => {
   return (
     <>
       <FavoriteProvider>
-        <Navbar />
         <Pokedex />
       </FavoriteProvider>
     </>

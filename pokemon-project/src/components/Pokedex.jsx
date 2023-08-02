@@ -1,9 +1,10 @@
 import { useContext, useEffect, useState } from "react";
 import "../styles/Home/pokedex.sass";
-import { getPokemons, getPokemonData } from "../Api";
+import { getPokemons, getPokemonData, searchPokemon } from "../Api";
 import Pokemon from "./Pokemon";
 import Pagination from "./Pagination";
 import { FavoriteContext } from "../context/FavoriteContext";
+import Navbar from "./Navbar";
 
 const Pokedex = () => {
   const [pokemons, setPokemons] = useState([]);
@@ -11,6 +12,7 @@ const Pokedex = () => {
   const [totalPages, setTotalPages] = useState(0);
   const itemsPerPage = 25
   const {favorites, setFavorites} = useContext(FavoriteContext)
+  const [notFound, setNotFound] = useState(false);
 
   const onLeftCickHandler = () => {
     if (page+1 > 1){
@@ -42,7 +44,7 @@ const Pokedex = () => {
       console.log(error);
     }
   };
-  
+
   useEffect(() => {
     fetchPokemons();
   }, [page]);
@@ -56,8 +58,24 @@ const Pokedex = () => {
     localFavoritePokemons()
   }, []);
 
+  const onSearchHandler = async (pokemon) => {
+
+    if(!pokemon) {
+      return fetchPokemons();
+    }
+    const result = await searchPokemon(pokemon)
+    if(!result) {
+      setNotFound(true)
+    } else {
+      setPokemons([result])
+      setPage(0)
+      setTotalPages(1)
+    }
+  }
+
   return (
     <>
+      <Navbar onSearch={onSearchHandler} />
       <div className="pokedex-header">
         <p>Pokédex</p>
         <Pagination 
@@ -68,7 +86,9 @@ const Pokedex = () => {
         />
       </div>
       <section className="poke-container ">
-        {pokemons.length > 0 ? (
+        {notFound ? (
+          <h3 className="not-found-text"> Pokémon não encontrado ?! </h3>
+        ) : pokemons.length > 0 ? (
           pokemons.map((pokemon) => (
             <Pokemon key={pokemon.id} data={pokemon}/>
           ))
@@ -76,6 +96,7 @@ const Pokedex = () => {
           <div>Loading...</div>
         )}
       </section>
+
     </>
   );
 };

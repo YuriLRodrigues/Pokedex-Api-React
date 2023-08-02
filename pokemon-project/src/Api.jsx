@@ -1,9 +1,6 @@
-import { isRouteErrorResponse } from "react-router-dom"
-
-export const searchPokemon = async (pokeName) => {
+export const searchPokemon = async (pokemon) => {
   try {
-    let url = `https://pokeapi.co/api/v2/pokemon/${pokeName}`
-
+    let url = `https://pokeapi.co/api/v2/pokemon/${pokemon}`
     const response = await fetch(url)
     const data = await response.json()
     return data
@@ -34,4 +31,3 @@ export const getPokemonData = async (url) => {
     console.log(error)
   }
 }
-

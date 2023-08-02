@@ -1,21 +1,26 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { FaSearch } from 'react-icons/fa'
-import {searchPokemon} from '../Api'
 
-const SearchBar = () => {
-  const [pokemonSearch, setPokemonSearch] = useState()
-  const [pokemon, setPokemon] = useState()
+const SearchBar = ({onSearch}) => {
+  const [search, setSearch] = useState()
   
-  const onButtonClickHandle = async (e) => {
-    e.preventDefault()
-    const searchedPokemon = await searchPokemon(pokemonSearch)
-    setPokemon(searchedPokemon)
-  }
+
+    const onChangeHandler = async (e) => {
+      setSearch(e.target.value)
+      if(e.target.value.length === 0) {
+          await onSearch(undefined)
+      }
+    }
+
+    const onButtonClickHandler = async (e) => {
+      e.preventDefault()
+      await onSearch(search.toLowerCase())
+    }
 
   return (
-    <form onSubmit={onButtonClickHandle}>
-      <input className="search-input" type="search" id="" placeholder="Buscar Pokemon" onChange={(e)=> setPokemonSearch(e.target.value)}  />
-      <button className="search-button"><FaSearch /></button>
+    <form>
+      <input className="search-input" type="search" placeholder="Buscar Pokemon" onChange={onChangeHandler}  />
+      <button className="search-button" onClick={onButtonClickHandler}><FaSearch /></button>
     </form>
   )
 }
